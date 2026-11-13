@@ -1,26 +1,26 @@
+
 import { IAuthRepository } from '../domain/IAuthRepository.js';
 import { httpClient } from '../../../shared/infrastructure/httpClient.js';
-import { toDomainUser, toStorableUser } from './authMapper.js';
+import { toStorableUser } from './authMapper.js';
 import { toBackendRole } from './roleMapper.js';
 
 export class HttpAuthRepository extends IAuthRepository {
+
   async register(data) {
-    const response = await httpClient.post('/iam/auth/register', {
+    await httpClient.post('/iam/auth/register', {
       email: data.email,
       password: data.password,
-      name: data.name,
+      name: data.name?.trim() || data.username,
       username: data.username,
       role: toBackendRole(data.role),
     });
 
-    const json = response.data;
-    const user = toDomainUser(json.user);
-
-    return {
-      token: json.token || json.access_token,
-      expiresAt: json.expires_at || json.expiresAt || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-      user: toStorableUser(json.user),
-    };
+    // Después del registro, iniciamos sesión para
+    // obtener el JWT y el perfil real del usuario.
+    return this.login({
+      email: data.email,
+      password: data.password,
+    });
   }
 
   async login(credentials) {
@@ -30,17 +30,28 @@ export class HttpAuthRepository extends IAuthRepository {
     });
 
     const json = response.data;
+    const token = json.token;
+
+    if (!token) {
+      throw new Error('El servidor no devolvió un token JWT');
+    }
+
+    // El backend devuelve el usuario completo
+    // mediante un endpoint separado.
+    const user = await this.getCurrentUser(token);
 
     return {
-      token: json.token || json.access_token,
-      expiresAt: json.expires_at || json.expiresAt || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-      user: toStorableUser(json.user),
+      token,
+      expiresAt: json.expiresAt,
+      user,
     };
   }
 
   async getCurrentUser(token) {
     const response = await httpClient.get('/iam/users/me', {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     return toStorableUser(response.data);
