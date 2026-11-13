@@ -1,24 +1,45 @@
 {
   "expo": {
-    "name": "APPMOVIL_FOODLY",
-    "slug": "APPMOVIL_FOODLY",
+    "name": "Foodly",
+    "slug": "foodly",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "scheme": "foodly",
     "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFF8F5"
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.foodly.app"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+        "backgroundColor": "#FFF8F5",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "package": "com.foodly.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Foodly necesita tu ubicación para mostrarte huariques cercanos.",
+          "locationWhenInUsePermission": "Foodly necesita tu ubicación para mostrarte huariques cercanos."
+        }
+      ]
+    ]
   }
 }
