@@ -62,7 +62,7 @@ export function HuariqueDetailScreen() {
             </View>
             <View style={styles.infoRow}>
               <Info icon="time-outline" label="Horario" value={place.openHours} />
-              <Info icon="people-outline" label="Aforo demo" value={`${place.capacity} personas`} />
+              <Info icon="people-outline" label="Aforo" value={`${place.capacity} personas`} />
             </View>
           </Card>
 
@@ -90,7 +90,7 @@ export function HuariqueDetailScreen() {
             </Card>
           ))}
 
-          <SectionTitle title="Reseñas de la comunidad" subtitle="Comentarios ficticios para esta demo" />
+          <SectionTitle title="Reseñas de la comunidad" subtitle="Opiniones de visitantes" />
           {place.reviews.map((review) => (
             <Card key={review.name} style={styles.reviewCard}>
               <View style={styles.reviewHeader}>

@@ -85,7 +85,7 @@ export function LiaChatScreen() {
         setStep('restaurant');
         addMessage('lia', normalized.includes('cevich')
           ? '¡Se me antojó! Elige un lugar para ir por algo marino y te ayudo con la reserva.'
-          : '¡Claro! Elige un huarique y armamos tu reserva demo.');
+          : '¡Claro! Elige un huarique y armamos tu reserva.');
       } else {
         addMessage('lia', '¡Vamos a ver las rutas gastronómicas! 🗺️');
         navigation.getParent()?.navigate('Rutas');
@@ -128,7 +128,7 @@ export function LiaChatScreen() {
         guests: draft.guests,
       });
       setStep('done');
-      addMessage('lia', `¡Listo! Tu reserva demo está confirmada en ${place?.name} 🎉\nCódigo: ${booking.code}\n\nLa verás en la pestaña Rutas, en “Mis reservas”.`);
+      addMessage('lia', `¡Listo! Tu reserva está confirmada en ${place?.name} 🎉\nCódigo: ${booking.code}\n\nLa verás en la pestaña Rutas, en “Mis reservas”.`);
       return;
     }
 
@@ -143,7 +143,7 @@ export function LiaChatScreen() {
     const normalized = value.toLowerCase();
     if (normalized.includes('reserv') || normalized.includes('mesa')) {
       setStep('restaurant');
-      addMessage('lia', '¡Claro! Elige uno de estos huariques y armo tu reserva demo.');
+      addMessage('lia', '¡Claro! Elige uno de estos huariques y armo tu reserva.');
     } else if (normalized.includes('cevich') || normalized.includes('mar')) {
       setStep('restaurant');
       addMessage('lia', '¡Se me antojó! Estos lugares marinos están buenazos. Elige uno y te ayudo con la reserva.');
@@ -176,7 +176,7 @@ export function LiaChatScreen() {
           <View style={styles.avatar}><Text style={styles.avatarText}>L</Text></View>
           <View style={styles.headerCopy}>
             <Text style={styles.headerTitle}>Lía Copiloto</Text>
-            <Text style={styles.headerStatus}>● En línea · Modo demo</Text>
+            <Text style={styles.headerStatus}>● En línea</Text>
           </View>
           <Ionicons name="sparkles" size={20} color={colors.primary} />
         </View>

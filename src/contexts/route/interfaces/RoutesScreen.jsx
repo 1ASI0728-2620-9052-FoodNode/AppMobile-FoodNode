@@ -130,7 +130,7 @@ export function RoutesScreen() {
             </View>
             <TouchableOpacity
               style={styles.bookingLink}
-              onPress={() => place ? navigation.navigate('HuariqueDetail', { id: place.id }) : Alert.alert('Reserva demo', 'Esta reserva es solo una simulación.')}
+              onPress={() => place ? navigation.navigate('HuariqueDetail', { id: place.id }) : Alert.alert('Reserva', 'Esta reserva es solo una simulación.')}
               accessibilityLabel="Ver restaurante reservado"
             >
               <Ionicons name="chevron-forward" size={20} color={colors.primary} />
@@ -152,7 +152,7 @@ export function RoutesScreen() {
 
       <View style={styles.demoNote}>
         <Ionicons name="sparkles-outline" size={16} color={colors.primary} />
-        <Text style={styles.demoNoteText}>Rutas, tiempos, distancias y reservas son simulaciones para la demo.</Text>
+        <Text style={styles.demoNoteText}>Rutas, tiempos, distancias y reservas son simulaciones.</Text>
       </View>
     </ScreenContainer>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { Alert, View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ScreenContainer } from '../../../shared/interfaces/ui/ScreenContainer.jsx';
 import { Button } from '../../../shared/interfaces/ui/Button.jsx';
@@ -47,10 +47,27 @@ export function ProfileScreen() {
 
   const displayUser = profile || user || (DEMO_MODE ? {
     name: 'Explorador Foodly',
-    email: 'demo@foodly.app',
+    email: 'explorador@foodly.app',
     username: 'explorador',
     role: Roles.GASTRONOMIC_EXPLORER,
   } : null);
+
+  const confirmLogout = () => {
+    Alert.alert('Cerrar sesión', '¿Quieres salir de tu sesión?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Cerrar sesión',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await logout();
+          } catch (error) {
+            Alert.alert('No se pudo cerrar sesión', error.message || 'Inténtalo de nuevo.');
+          }
+        },
+      },
+    ]);
+  };
 
   if (!DEMO_MODE && loadingProfile && !displayUser) {
     return (
@@ -86,20 +103,13 @@ export function ProfileScreen() {
         </Card>
 
         {/* Logout */}
-        {DEMO_MODE ? (
-          <View style={styles.demoNote}>
-            <Ionicons name="sparkles-outline" size={18} color={colors.primary} />
-            <Text style={styles.demoNoteText}>Estás explorando Foodly en modo demo.</Text>
-          </View>
-        ) : (
-          <Button
-            title="Cerrar sesión"
-            variant="outline"
-            onPress={logout}
-            loading={authLoading}
-            icon={<Ionicons name="log-out-outline" size={20} color={colors.primary} />}
-          />
-        )}
+        <Button
+          title="Cerrar sesión"
+          variant="outline"
+          onPress={confirmLogout}
+          loading={authLoading}
+          icon={<Ionicons name="log-out-outline" size={20} color={colors.primary} />}
+        />
       </View>
     </ScreenContainer>
   );
@@ -144,20 +154,6 @@ const styles = StyleSheet.create({
   /* Info card */
   infoCard: {
     marginBottom: spacing.xxl,
-  },
-  demoNote: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-    padding: spacing.md,
-    borderRadius: spacing.borderRadius.md,
-    backgroundColor: colors.peach,
-  },
-  demoNoteText: {
-    fontFamily: typography.fontFamily.semiBold,
-    fontSize: typography.fontSize.sm,
-    color: colors.brownDark,
   },
   infoRow: {
     flexDirection: 'row',

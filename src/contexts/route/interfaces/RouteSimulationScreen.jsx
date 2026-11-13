@@ -155,7 +155,7 @@ export function RouteSimulationScreen() {
         ) : null}
 
         <Button
-          title={isLastStop ? 'Completar ruta demo' : 'Llegué · Siguiente parada'}
+          title={isLastStop ? 'Completar ruta' : 'Llegué · Siguiente parada'}
           onPress={advance}
           icon={<Ionicons name={isLastStop ? 'checkmark-circle-outline' : 'navigate-outline'} size={19} color={colors.surface} />}
           style={styles.advanceButton}
