@@ -13,16 +13,19 @@ export class MessageDto {
     };
   }
 
+  /**
+   * Mensaje del backend: { id, sender, content, intentType, huariqueId, reservationId, sentAt }.
+   * También acepta las variantes snake_case / detectedIntent / reservationRef del mock.
+   */
   static fromRaw(raw) {
     return {
       id: raw.id,
       sender: raw.sender,
       content: raw.content,
-      detectedIntent: raw.detected_intent || raw.detectedIntent || null,
-      reservationRef: raw.reservation_ref || raw.reservationRef || null,
+      detectedIntent: raw.intentType || raw.detected_intent || raw.detectedIntent || null,
+      reservationRef: raw.reservationId || raw.reservation_ref || raw.reservationRef || null,
       sentAt: raw.sent_at || raw.sentAt || new Date().toISOString(),
       isFromLia: raw.sender === Senders.LIA,
     };
   }
 }
-

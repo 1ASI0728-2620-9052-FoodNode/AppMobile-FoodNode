@@ -19,6 +19,14 @@ import { BusinessCommunitySummaryAdapter } from '../contexts/radar/infrastructur
 import { SearchNearbyHuariquesQueryHandler } from '../contexts/radar/application/SearchNearbyHuariquesQueryHandler.js';
 import { GetCoverageZoneQueryHandler } from '../contexts/radar/application/GetCoverageZoneQueryHandler.js';
 
+// ── MESSAGING ─────────────────────────────────────────────────────────────────
+import { MockLiaChatRepository } from '../contexts/messaging/infrastructure/MockLiaChatRepository.js';
+import { HttpLiaChatRepository } from '../contexts/messaging/infrastructure/HttpLiaChatRepository.js';
+import { SendMessageToLiaCommandHandler } from '../contexts/messaging/application/SendMessageToLiaCommandHandler.js';
+import { GetMyConversationQueryHandler } from '../contexts/messaging/application/GetMyConversationQueryHandler.js';
+import { GetConversationMessagesQueryHandler } from '../contexts/messaging/application/GetConversationMessagesQueryHandler.js';
+import { LiaResponsePoller } from '../contexts/messaging/application/LiaResponsePoller.js';
+
 export function createContainer() {
   // ── IAM ────────────────────────────────────────────────────────────────────
   const authRepository = MOCK_FLAGS.auth
@@ -45,6 +53,16 @@ export function createContainer() {
   const searchHandler = new SearchNearbyHuariquesQueryHandler(radarRepository, summaryProvider);
   const coverageHandler = new GetCoverageZoneQueryHandler(h3IndexService);
 
+  // ── MESSAGING ──────────────────────────────────────────────────────────────
+  const liaChatRepository = MOCK_FLAGS.messaging
+    ? new MockLiaChatRepository()
+    : new HttpLiaChatRepository();
+
+  const sendHandler = new SendMessageToLiaCommandHandler(liaChatRepository);
+  const getConversationHandler = new GetMyConversationQueryHandler(liaChatRepository);
+  const getMessagesHandler = new GetConversationMessagesQueryHandler(liaChatRepository);
+  const poller = new LiaResponsePoller(getMessagesHandler);
+
   return {
     mockFlags: MOCK_FLAGS,
     iam: {
@@ -58,6 +76,12 @@ export function createContainer() {
       searchHandler,
       coverageHandler,
       locationProvider,
+    },
+    messaging: {
+      sendHandler,
+      getConversationHandler,
+      getMessagesHandler,
+      poller,
     },
   };
 }

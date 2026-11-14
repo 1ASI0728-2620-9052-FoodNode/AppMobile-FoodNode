@@ -17,12 +17,23 @@ import { spacing } from '../../../shared/interfaces/theme/spacing.js';
 import { typography } from '../../../shared/interfaces/theme/typography.js';
 import { DEMO_HUARIQUES } from '../../../shared/demo/demoHuariques.js';
 import { useDemoData } from '../../../app/providers/DemoDataProvider.jsx';
+import { useDependencies } from '../../../app/providers/DependencyProvider.jsx';
+import { LiaLiveChatScreen } from './LiaLiveChatScreen.jsx';
 
 const QUICK_DATES = ['Hoy', 'Mañana', 'Este sábado'];
 const QUICK_TIMES = ['1:00 p. m.', '7:00 p. m.', '8:30 p. m.'];
 const QUICK_GUESTS = ['1 persona', '2 personas', '4 personas'];
 
+/**
+ * Con MOCK_MESSAGING=true (o DEMO_MODE) se usa el chat con guion de demostración;
+ * con MOCK_MESSAGING=false se conecta a messaging-service.
+ */
 export function LiaChatScreen() {
+  const { mockFlags } = useDependencies();
+  return mockFlags.messaging ? <LiaDemoChatScreen /> : <LiaLiveChatScreen />;
+}
+
+function LiaDemoChatScreen() {
   const navigation = useNavigation();
   const { params } = useRoute();
   const initialPlace = DEMO_HUARIQUES.find((item) => item.id === params?.restaurantId);

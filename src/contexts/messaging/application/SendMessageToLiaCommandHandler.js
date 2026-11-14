@@ -9,13 +9,22 @@ export class SendMessageToLiaCommandHandler {
   }
 
   /**
-   * @param {{ content: string, coordinates?: { latitude: number, longitude: number } | null }} command
+   * @param {{
+   *   content: string,
+   *   coordinates?: { latitude: number, longitude: number } | null,
+   *   conversationId?: string | null,
+   * }} command
+   * @returns {Promise<{ conversationId: string, messageId: string }>}
    */
-  async execute({ content, coordinates = null }) {
+  async execute({ content, coordinates = null, conversationId = null }) {
     if (!content || content.trim().length === 0) {
       throw new DomainError('El mensaje no puede estar vacío', 'EMPTY_MESSAGE');
     }
-    await this._repository.sendMessage(content.trim(), coordinates);
+    const { conversationId: id, messageId } = await this._repository.sendMessage(
+      content.trim(),
+      coordinates,
+      conversationId,
+    );
+    return { conversationId: id, messageId };
   }
 }
-

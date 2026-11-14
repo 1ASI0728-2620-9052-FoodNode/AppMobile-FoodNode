@@ -47,7 +47,7 @@ export class MockLiaChatRepository extends ILiaChatRepository {
     return this._conversations.get('default');
   }
 
-  async sendMessage(content, _coordinates) {
+  async sendMessage(content, _coordinates, _conversationId) {
     const delay = 300 + Math.random() * 400;
     await new Promise((r) => setTimeout(r, delay));
 
@@ -76,12 +76,16 @@ export class MockLiaChatRepository extends ILiaChatRepository {
       };
       conv.messages.push(liaMsg);
     }, liaDelay);
+
+    return { conversationId: conv.id, messageId: userMsg.id };
   }
 
   async getMyConversation() {
     await new Promise((r) => setTimeout(r, 200));
     const conv = this._getConv();
-    return { id: conv.id, status: conv.status, messages: [] };
+    // Igual que el backend: sin mensajes todavía no hay conversación.
+    if (conv.messages.length === 0) return null;
+    return { id: conv.id, status: 'ACTIVE', messages: [] };
   }
 
   async getMessages(_conversationId) {
