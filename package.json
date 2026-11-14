@@ -29,7 +29,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "jest --testPathPatterns='domain|application|kernel' --forceExit",
+    "test": "jest --testPathPatterns=\"domain|application|kernel|infrastructure|demo\" --forceExit",
     "lint": "eslint src/ --ext .js,.jsx"
   },
   "jest": {
