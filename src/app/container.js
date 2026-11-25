@@ -19,6 +19,25 @@ import { BusinessCommunitySummaryAdapter } from '../contexts/radar/infrastructur
 import { SearchNearbyHuariquesQueryHandler } from '../contexts/radar/application/SearchNearbyHuariquesQueryHandler.js';
 import { GetCoverageZoneQueryHandler } from '../contexts/radar/application/GetCoverageZoneQueryHandler.js';
 
+// ── BUSINESS ──────────────────────────────────────────────────────────────────
+import { MockBusinessRepository } from '../contexts/business/infrastructure/MockBusinessRepository.js';
+import { HttpBusinessRepository } from '../contexts/business/infrastructure/HttpBusinessRepository.js';
+import { GetHuariqueByIdQueryHandler } from '../contexts/business/application/GetHuariqueByIdQueryHandler.js';
+import { GetHuariqueMenuQueryHandler } from '../contexts/business/application/GetHuariqueMenuQueryHandler.js';
+
+// ── COMMUNITY ─────────────────────────────────────────────────────────────────
+import { MockFavoriteRepository } from '../contexts/community/infrastructure/MockFavoriteRepository.js';
+import { HttpFavoriteRepository } from '../contexts/community/infrastructure/HttpFavoriteRepository.js';
+import { MockReviewRepository } from '../contexts/community/infrastructure/MockReviewRepository.js';
+import { HttpReviewRepository } from '../contexts/community/infrastructure/HttpReviewRepository.js';
+import { ReservationVisitAdapter } from '../contexts/community/infrastructure/ReservationVisitAdapter.js';
+import { AddFavoriteCommandHandler } from '../contexts/community/application/AddFavoriteCommandHandler.js';
+import { RemoveFavoriteCommandHandler } from '../contexts/community/application/RemoveFavoriteCommandHandler.js';
+import { GetMyFavoritesQueryHandler } from '../contexts/community/application/GetMyFavoritesQueryHandler.js';
+import { GetReviewsByHuariqueQueryHandler } from '../contexts/community/application/GetReviewsByHuariqueQueryHandler.js';
+import { PublishVerifiedReviewCommandHandler } from '../contexts/community/application/PublishVerifiedReviewCommandHandler.js';
+import { CanPublishReviewQueryHandler } from '../contexts/community/application/CanPublishReviewQueryHandler.js';
+
 // ── MESSAGING ─────────────────────────────────────────────────────────────────
 import { MockLiaChatRepository } from '../contexts/messaging/infrastructure/MockLiaChatRepository.js';
 import { HttpLiaChatRepository } from '../contexts/messaging/infrastructure/HttpLiaChatRepository.js';
@@ -53,6 +72,35 @@ export function createContainer() {
   const searchHandler = new SearchNearbyHuariquesQueryHandler(radarRepository, summaryProvider);
   const coverageHandler = new GetCoverageZoneQueryHandler(h3IndexService);
 
+  // ── BUSINESS ───────────────────────────────────────────────────────────────
+  const businessRepository = MOCK_FLAGS.business
+    ? new MockBusinessRepository()
+    : new HttpBusinessRepository();
+
+  const getHuariqueHandler = new GetHuariqueByIdQueryHandler(businessRepository);
+  const getHuariqueMenuHandler = new GetHuariqueMenuQueryHandler(businessRepository);
+
+  // ── COMMUNITY ──────────────────────────────────────────────────────────────
+  // Mock por defecto; Http solo con EXPO_PUBLIC_MOCK_COMMUNITY=false (y DEMO_MODE=false).
+  const favoriteRepository = MOCK_FLAGS.community
+    ? new MockFavoriteRepository()
+    : new HttpFavoriteRepository();
+  const reviewRepository = MOCK_FLAGS.community
+    ? new MockReviewRepository()
+    : new HttpReviewRepository();
+  // Sin contexto de reservas real todavía: siempre responde "visita no verificada".
+  const visitVerificationService = new ReservationVisitAdapter();
+
+  const addFavoriteHandler = new AddFavoriteCommandHandler(favoriteRepository);
+  const removeFavoriteHandler = new RemoveFavoriteCommandHandler(favoriteRepository);
+  const getFavoritesHandler = new GetMyFavoritesQueryHandler(favoriteRepository);
+  const reviewsHandler = new GetReviewsByHuariqueQueryHandler(reviewRepository);
+  const publishHandler = new PublishVerifiedReviewCommandHandler(
+    reviewRepository,
+    visitVerificationService
+  );
+  const canPublishHandler = new CanPublishReviewQueryHandler(visitVerificationService);
+
   // ── MESSAGING ──────────────────────────────────────────────────────────────
   const liaChatRepository = MOCK_FLAGS.messaging
     ? new MockLiaChatRepository()
@@ -76,6 +124,18 @@ export function createContainer() {
       searchHandler,
       coverageHandler,
       locationProvider,
+    },
+    business: {
+      getHuariqueHandler,
+      getHuariqueMenuHandler,
+    },
+    community: {
+      addFavoriteHandler,
+      removeFavoriteHandler,
+      getFavoritesHandler,
+      reviewsHandler,
+      publishHandler,
+      canPublishHandler,
     },
     messaging: {
       sendHandler,

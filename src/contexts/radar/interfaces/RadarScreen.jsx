@@ -26,6 +26,7 @@ import { FilterBar } from './FilterBar.jsx';
 import { RadarMap } from './RadarMap.jsx';
 import { useDemoData } from '../../../app/providers/DemoDataProvider.jsx';
 import { DEMO_MODE } from '../../../shared/demo/demoMode.js';
+import { ENABLE_ROUTES } from '../../../shared/featureFlags.js';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -163,7 +164,11 @@ export function RadarScreen() {
                 isFavorite={isFavorite(item.id)}
                 onToggleFavorite={() => toggleFavorite(item.id)}
                 onPressDetail={() => navigation.navigate('HuariqueDetail', { id: item.id })}
-                onPressRoute={() => navigation.navigate('RouteSimulation', { restaurantId: item.id })}
+                onPressRoute={
+                  ENABLE_ROUTES
+                    ? () => navigation.navigate('RouteSimulation', { restaurantId: item.id })
+                    : undefined
+                }
               />
             )}
           />

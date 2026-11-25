@@ -3,6 +3,8 @@ import { DEMO_MODE } from '../demo/demoMode.js';
 export const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://10.0.2.2:8000';
 export { DEMO_MODE };
 
+export { ENABLE_ROUTES } from '../featureFlags.js';
+
 export const MOCK_FLAGS = {
   auth: DEMO_MODE || process.env.EXPO_PUBLIC_MOCK_AUTH === 'true',
   radar: DEMO_MODE || process.env.EXPO_PUBLIC_MOCK_RADAR !== 'false',

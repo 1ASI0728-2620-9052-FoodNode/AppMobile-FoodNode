@@ -99,11 +99,13 @@ export function HuariqueCard({
               Ver Detalle
             </Button>
           </View>
-          <View style={styles.buttonWrap}>
-            <Button variant="primary" onPress={onPressRoute} size="sm">
-              Ir en Ruta
-            </Button>
-          </View>
+          {onPressRoute && (
+            <View style={styles.buttonWrap}>
+              <Button variant="primary" onPress={onPressRoute} size="sm">
+                Ir en Ruta
+              </Button>
+            </View>
+          )}
         </View>
       </View>
     </Card>
