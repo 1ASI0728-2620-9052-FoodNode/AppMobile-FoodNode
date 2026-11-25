@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, typography } from '../../shared/interfaces/theme/index.js';
+import { ENABLE_ROUTES } from '../../shared/featureFlags.js';
 import { RadarScreen } from '../../contexts/radar/interfaces/RadarScreen.jsx';
 import { FavoritesScreen } from '../../contexts/community/interfaces/FavoritesScreen.jsx';
 import { RoutesScreen } from '../../contexts/route/interfaces/RoutesScreen.jsx';
@@ -86,7 +87,7 @@ export function ExplorerTabs() {
     >
       <Tab.Screen name="Radar" component={RadarTab} />
       <Tab.Screen name="Favoritos" component={FavoritesTab} />
-      <Tab.Screen name="Rutas" component={RoutesTab} />
+      {ENABLE_ROUTES && <Tab.Screen name="Rutas" component={RoutesTab} />}
       <Tab.Screen name="Perfil" component={ProfileScreen} />
     </Tab.Navigator>
   );

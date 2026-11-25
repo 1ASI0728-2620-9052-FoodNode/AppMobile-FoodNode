@@ -10,6 +10,7 @@ import { spacing } from '../../../shared/interfaces/theme/spacing.js';
 import { typography } from '../../../shared/interfaces/theme/typography.js';
 import { DEMO_HUARIQUES } from '../../../shared/demo/demoHuariques.js';
 import { useDemoData } from '../../../app/providers/DemoDataProvider.jsx';
+import { ENABLE_ROUTES } from '../../../shared/featureFlags.js';
 
 export function HuariqueDetailScreen() {
   const navigation = useNavigation();
@@ -121,12 +122,14 @@ export function HuariqueDetailScreen() {
           icon={<Ionicons name="chatbubble-ellipses-outline" size={19} color={colors.surface} />}
           style={styles.reserveButton}
         />
-        <TouchableOpacity
-          style={styles.routeButton}
-          onPress={() => navigation.navigate('RouteSimulation', { restaurantId: place.id })}
-        >
-          <Ionicons name="navigate-outline" size={22} color={colors.primary} />
-        </TouchableOpacity>
+        {ENABLE_ROUTES && (
+          <TouchableOpacity
+            style={styles.routeButton}
+            onPress={() => navigation.navigate('RouteSimulation', { restaurantId: place.id })}
+          >
+            <Ionicons name="navigate-outline" size={22} color={colors.primary} />
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );

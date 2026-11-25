@@ -18,6 +18,7 @@ import { typography } from '../../../shared/interfaces/theme/typography.js';
 import { DEMO_HUARIQUES } from '../../../shared/demo/demoHuariques.js';
 import { useDemoData } from '../../../app/providers/DemoDataProvider.jsx';
 import { useDependencies } from '../../../app/providers/DependencyProvider.jsx';
+import { ENABLE_ROUTES } from '../../../shared/featureFlags.js';
 import { LiaLiveChatScreen } from './LiaLiveChatScreen.jsx';
 
 const QUICK_DATES = ['Hoy', 'Mañana', 'Este sábado'];
@@ -97,9 +98,11 @@ function LiaDemoChatScreen() {
         addMessage('lia', normalized.includes('cevich')
           ? '¡Se me antojó! Elige un lugar para ir por algo marino y te ayudo con la reserva.'
           : '¡Claro! Elige un huarique y armamos tu reserva.');
-      } else {
+      } else if (ENABLE_ROUTES) {
         addMessage('lia', '¡Vamos a ver las rutas gastronómicas! 🗺️');
         navigation.getParent()?.navigate('Rutas');
+      } else {
+        addMessage('lia', '¡Qué rico! Puedo recomendarte lugares o ayudarte a reservar una mesa. ¿Qué prefieres?');
       }
       return;
     }
@@ -139,7 +142,7 @@ function LiaDemoChatScreen() {
         guests: draft.guests,
       });
       setStep('done');
-      addMessage('lia', `¡Listo! Tu reserva está confirmada en ${place?.name} 🎉\nCódigo: ${booking.code}\n\nLa verás en la pestaña Rutas, en “Mis reservas”.`);
+      addMessage('lia', `¡Listo! Tu reserva está confirmada en ${place?.name} 🎉\nCódigo: ${booking.code}${ENABLE_ROUTES ? '\n\nLa verás en la pestaña Rutas, en “Mis reservas”.' : ''}`);
       return;
     }
 
@@ -158,7 +161,7 @@ function LiaDemoChatScreen() {
     } else if (normalized.includes('cevich') || normalized.includes('mar')) {
       setStep('restaurant');
       addMessage('lia', '¡Se me antojó! Estos lugares marinos están buenazos. Elige uno y te ayudo con la reserva.');
-    } else if (normalized.includes('ruta')) {
+    } else if (ENABLE_ROUTES && normalized.includes('ruta')) {
       addMessage('lia', 'En la pestaña Rutas puedes elegir un recorrido y simular cada parada 🗺️');
     } else {
       addMessage('lia', '¡Qué rico! Puedo recomendarte lugares, mostrarte rutas o ayudarte a reservar. ¿Qué prefieres?');
